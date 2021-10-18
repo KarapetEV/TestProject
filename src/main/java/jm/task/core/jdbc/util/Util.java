@@ -7,10 +7,17 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
 
 public class Util {
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "root";
+    private static final String URL = "jdbc:mysql://localhost:3306/myppdb";
+
     private static SessionFactory sessionFactory;
 
     private Util() {}
@@ -22,10 +29,10 @@ public class Util {
 
                 Properties settings = new Properties();
                 settings.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
-                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/myppdb");
-                settings.put(Environment.USER, "root");
-                settings.put(Environment.PASS, "root");
-                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
+                settings.put(Environment.URL, URL);
+                settings.put(Environment.USER, USERNAME);
+                settings.put(Environment.PASS, PASSWORD);
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
                 settings.put(Environment.SHOW_SQL, "true");
 
                 configuration.setProperties(settings);
@@ -37,5 +44,15 @@ public class Util {
             }
         }
         return sessionFactory;
+    }
+
+    public static Connection getConnection() {
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return connection;
     }
 }
